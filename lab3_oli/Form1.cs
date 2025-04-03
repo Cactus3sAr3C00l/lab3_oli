@@ -7,17 +7,19 @@ using System.Text.Json;
 using System.Text.Unicode;
 using System.Drawing;
 using System.IO;
+using System.Xml.Serialization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using static lab3_oli.Form1;
 
 
 namespace lab3_oli
 {
-    public partial class Form1: Form
+    public partial class Form1 : Form
     {
         Form2 form2;
         private BindingSource bindingSource1 = new BindingSource();
@@ -39,12 +41,12 @@ namespace lab3_oli
             dataTable.Columns.Add("Stanowisko", typeof(string));
 
             dataTable.Rows.Add("Olimpia", "Gawrońska", 21, "Bioinformatyk");
-            dataTable.Rows.Add("Dorota", "Durzynska" , 22 , "Muzyk");
+            dataTable.Rows.Add("Dorota", "Durzynska", 22, "Muzyk");
 
             // Połącz dane z BindingSource
             bindingSource1.DataSource = dataTable;
             // Inicjalizacja DataGridView
-          
+
             dataGridView1.Dock = DockStyle.Fill;
             // Przypisz DataGridView do BindingSource
             dataGridView1.DataSource = bindingSource1;
@@ -52,7 +54,8 @@ namespace lab3_oli
             Controls.Add(dataGridView1);
 
         }
-        private class Employee
+        [Serializable]
+        public class Employee
         {
             public string Imie { get; set; }
             public string Nazwisko { get; set; }
@@ -100,14 +103,14 @@ namespace lab3_oli
 
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
-               
+
                 if (!row.IsNewRow)
                 {
                     csvContent += string.Join(",", row.Cells.Cast<DataGridViewCell>().Select(c => c.Value?.ToString() ?? "")) + Environment.NewLine;
                 }
             }
 
-     
+
             File.WriteAllText(filePath, csvContent);
             MessageBox.Show("Plik zapisany w: " + filePath, "Zapisano", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -117,7 +120,7 @@ namespace lab3_oli
         {
             string filePath = Path.Combine(Application.StartupPath, "FILENAME.txt");
 
-    
+
             if (!File.Exists(filePath))
             {
                 MessageBox.Show("Plik CSV nie istnieje.", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -154,7 +157,7 @@ namespace lab3_oli
         //usun
         private void button2_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.SelectedRows.Count > 0) 
+            if (dataGridView1.SelectedRows.Count > 0)
             {
                 dataGridView1.Rows.RemoveAt(dataGridView1.SelectedRows[0].Index);
             }
@@ -186,7 +189,7 @@ namespace lab3_oli
                 {
                     WriteIndented = true,
                     Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-                    
+
                 };
                 string jsonString = JsonSerializer.Serialize(employees);
                 File.WriteAllText(filePath, jsonString);
@@ -205,11 +208,65 @@ namespace lab3_oli
 
             List<Employee> employees = JsonSerializer.Deserialize<List<Employee>>(jsonString);
 
-          
+
 
             foreach (var emp in employees)
             {
                 dataTable.Rows.Add(emp.Imie, emp.Nazwisko, emp.Wiek, emp.Stanowisko);
+            }
+        }
+
+        private void readXML_Click(object sender, EventArgs e)
+        {
+            string filePath = Path.Combine(Application.StartupPath, "dataExportXML.xml");
+            List<Employee> employees;
+            XmlSerializer serializer = new XmlSerializer(typeof(List<Employee>));
+            using (TextReader reader = new StreamReader(filePath))
+            {
+                employees = (List<Employee>)serializer.Deserialize(reader);
+                Console.WriteLine("Obiekt został odczytany z pliku XML.");
+              
+            }
+            foreach (var emp in employees)
+            {
+                dataTable.Rows.Add(emp.Imie, emp.Nazwisko, emp.Wiek, emp.Stanowisko);
+            }
+
+        }
+
+        private void saveXML_Click(object sender, EventArgs e)
+        {
+            string filePath = Path.Combine(Application.StartupPath, "dataExportXML.xml");
+            List<Employee> employees = new List<Employee>();
+
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                if (!row.IsNewRow)
+                {
+                    Employee emp = new Employee
+                    {
+                        Imie = row.Cells["Imie"].Value?.ToString() ?? "",
+                        Nazwisko = row.Cells["Nazwisko"].Value?.ToString() ?? "",
+                        Wiek = Convert.ToInt32(row.Cells["Wiek"].Value ?? 0),
+                        Stanowisko = row.Cells["Stanowisko"].Value?.ToString() ?? ""
+                    };
+
+                    employees.Add(emp);
+                }
+
+
+                XmlSerializer serializer = new XmlSerializer(typeof(List<Employee>));
+                using (TextWriter writer = new StreamWriter(filePath))
+                {
+
+                    serializer.Serialize(writer, employees);
+
+                }
+
+
+
+                Console.WriteLine("Obiekt został zserializowany do pliku XML.");
+
             }
         }
     }

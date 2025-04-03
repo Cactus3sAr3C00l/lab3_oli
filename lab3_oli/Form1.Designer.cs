@@ -35,14 +35,16 @@
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.saveJSON = new System.Windows.Forms.Button();
             this.readJSON = new System.Windows.Forms.Button();
+            this.readXML = new System.Windows.Forms.Button();
+            this.saveXML = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(808, 24);
+            this.button1.Location = new System.Drawing.Point(804, 24);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(100, 34);
+            this.button1.Size = new System.Drawing.Size(104, 34);
             this.button1.TabIndex = 0;
             this.button1.Text = "Dodaj";
             this.button1.UseVisualStyleBackColor = true;
@@ -50,9 +52,9 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(808, 73);
+            this.button2.Location = new System.Drawing.Point(804, 73);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(100, 33);
+            this.button2.Size = new System.Drawing.Size(104, 33);
             this.button2.TabIndex = 1;
             this.button2.Text = "Usuń";
             this.button2.UseVisualStyleBackColor = true;
@@ -89,9 +91,9 @@
             // 
             // saveJSON
             // 
-            this.saveJSON.Location = new System.Drawing.Point(803, 201);
+            this.saveJSON.Location = new System.Drawing.Point(804, 201);
             this.saveJSON.Name = "saveJSON";
-            this.saveJSON.Size = new System.Drawing.Size(105, 60);
+            this.saveJSON.Size = new System.Drawing.Size(104, 60);
             this.saveJSON.TabIndex = 4;
             this.saveJSON.Text = "Zapis JSON";
             this.saveJSON.UseVisualStyleBackColor = true;
@@ -107,11 +109,33 @@
             this.readJSON.UseVisualStyleBackColor = true;
             this.readJSON.Click += new System.EventHandler(this.readJSON_Click);
             // 
+            // readXML
+            // 
+            this.readXML.Location = new System.Drawing.Point(804, 278);
+            this.readXML.Name = "readXML";
+            this.readXML.Size = new System.Drawing.Size(104, 63);
+            this.readXML.TabIndex = 6;
+            this.readXML.Text = "Odczyt XML";
+            this.readXML.UseVisualStyleBackColor = true;
+            this.readXML.Click += new System.EventHandler(this.readXML_Click);
+            // 
+            // saveXML
+            // 
+            this.saveXML.Location = new System.Drawing.Point(804, 360);
+            this.saveXML.Name = "saveXML";
+            this.saveXML.Size = new System.Drawing.Size(104, 57);
+            this.saveXML.TabIndex = 7;
+            this.saveXML.Text = "Zapis XML";
+            this.saveXML.UseVisualStyleBackColor = true;
+            this.saveXML.Click += new System.EventHandler(this.saveXML_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(947, 457);
+            this.Controls.Add(this.saveXML);
+            this.Controls.Add(this.readXML);
             this.Controls.Add(this.readJSON);
             this.Controls.Add(this.saveJSON);
             this.Controls.Add(this.dataGridView1);
@@ -136,6 +160,8 @@
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Button saveJSON;
         private System.Windows.Forms.Button readJSON;
+        private System.Windows.Forms.Button readXML;
+        private System.Windows.Forms.Button saveXML;
     }
 }
 
