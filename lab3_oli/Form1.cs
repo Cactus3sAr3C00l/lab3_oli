@@ -2,12 +2,18 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Unicode;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
+
 
 namespace lab3_oli
 {
@@ -45,6 +51,13 @@ namespace lab3_oli
             // Dodaj DataGridView do formularza
             Controls.Add(dataGridView1);
 
+        }
+        private class Employee
+        {
+            public string Imie { get; set; }
+            public string Nazwisko { get; set; }
+            public int Wiek { get; set; }
+            public string Stanowisko { get; set; }
         }
 
         public void addToGrid()
@@ -151,5 +164,53 @@ namespace lab3_oli
             }
         }
 
+        private void saveJSON_Click(object sender, EventArgs e)
+        {
+            string filePath = Path.Combine(Application.StartupPath, "dataExport.json");
+            List<Employee> employees = new List<Employee>();
+
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                if (!row.IsNewRow)
+                {
+                    Employee emp = new Employee
+                    {
+                        Imie = row.Cells["Imie"].Value?.ToString() ?? "",
+                        Nazwisko = row.Cells["Nazwisko"].Value?.ToString() ?? "",
+                        Wiek = Convert.ToInt32(row.Cells["Wiek"].Value ?? 0),
+                        Stanowisko = row.Cells["Stanowisko"].Value?.ToString() ?? ""
+                    };
+                    employees.Add(emp);
+                }
+                var options1 = new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                    
+                };
+                string jsonString = JsonSerializer.Serialize(employees);
+                File.WriteAllText(filePath, jsonString);
+                Console.WriteLine(File.ReadAllText(filePath));
+
+            }
+
+
+
+        }
+
+        private void readJSON_Click(object sender, EventArgs e)
+        {
+            string filePath = Path.Combine(Application.StartupPath, "dataExport.json");
+            string jsonString = File.ReadAllText(filePath);
+
+            List<Employee> employees = JsonSerializer.Deserialize<List<Employee>>(jsonString);
+
+          
+
+            foreach (var emp in employees)
+            {
+                dataTable.Rows.Add(emp.Imie, emp.Nazwisko, emp.Wiek, emp.Stanowisko);
+            }
+        }
     }
 }
